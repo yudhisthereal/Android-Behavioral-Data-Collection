@@ -34,11 +34,11 @@ fun TypingScreen(navController: NavController) {
                 // Simulate release event after some delay
                 inputText = newValue
                 keystrokeUseCase.addKeystroke(
-                    keyPressed,
-                    releaseTimeStamp - 100,
-                    releaseTimeStamp,
-                    100,
-                    releaseTimeStamp - lastKeyReleaseTime
+                    key = keyPressed,
+                    pressTimestamp = releaseTimeStamp - 100,
+                    releaseTimestamp = releaseTimeStamp,
+                    holdTime = 100,
+                    flightTime = releaseTimeStamp - lastKeyReleaseTime
                 )
                 lastKeyReleaseTime = releaseTimeStamp
             },
