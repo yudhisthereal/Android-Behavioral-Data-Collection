@@ -20,8 +20,8 @@ fun HomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Button(onClick = { /* Start timer logic */ }) {
-            Text("Start Data Collection")
+        Button(onClick = { navController.navigate("monitoring") }) {
+            Text("Data Collection")
         }
 
         Spacer(modifier = Modifier.height(20.dp))

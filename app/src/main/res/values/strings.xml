@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Behavioral Data Collection</string>
+    <string name="accessibility_service_description">accessibility service for capturing behavior data</string>
 </resources>

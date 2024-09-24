@@ -72,6 +72,9 @@ dependencies {
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
 
+    // for LiveData's observerAsState
+    implementation(libs.androidx.runtime.livedata)
+
     // Views/Fragments integration
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
