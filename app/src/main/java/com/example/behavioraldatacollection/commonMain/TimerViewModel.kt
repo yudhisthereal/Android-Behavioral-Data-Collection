@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,8 +17,8 @@ class TimerViewModel(private val app: Application) : AndroidViewModel(app) {
     private var serviceConnection: ServiceConnection? = null
     @SuppressLint("StaticFieldLeak")
     private var timerService: TimerService? = null
-    private val _currentTime = MutableLiveData<Long>()
-    private val _isTimerRunning = MutableLiveData<Boolean>()
+    private val _currentTime = MutableLiveData(600000L)
+    private val _isTimerRunning = MutableLiveData(false)
 
     init {
         _isTimerRunning.value = false
@@ -27,21 +28,18 @@ class TimerViewModel(private val app: Application) : AndroidViewModel(app) {
     fun startTimerService(totalTime: Long) {
         val serviceIntent = Intent(app, TimerService::class.java)
         app.startService(serviceIntent)
-        bindService()
-        // Start the timer in the service
-        timerService?.startTimer(totalTime)
-        _isTimerRunning.value = true
+        bindService(totalTime)
     }
 
     // Function to stop the timer
     fun stopTimer() {
         timerService?.stopTimer()
         _isTimerRunning.value = false
+        _currentTime.value = 600000
     }
 
     // Function to bind the service
-    private fun bindService() {
-        val serviceIntent = Intent(app, TimerService::class.java)
+    private fun bindService(totalTime: Long) {
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
                 val serviceBinder = binder as TimerService.TimerBinder
@@ -50,12 +48,18 @@ class TimerViewModel(private val app: Application) : AndroidViewModel(app) {
                 timerService?.getCurrentTime()?.observeForever { time ->
                     _currentTime.value = time
                 }
+
+                // Once the service is connected, start the timer
+                timerService?.startTimer(totalTime)
+                _isTimerRunning.value = true
             }
 
             override fun onServiceDisconnected(name: ComponentName?) {
                 timerService = null
             }
         }
+
+        val serviceIntent = Intent(app, TimerService::class.java)
         app.bindService(serviceIntent, serviceConnection!!, Context.BIND_AUTO_CREATE)
     }
 

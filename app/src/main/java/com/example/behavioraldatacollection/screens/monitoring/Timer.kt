@@ -45,7 +45,7 @@ fun Timer(
     strokeWidth: Dp = 5.dp
 ) {
     val isTimerRunning by viewModel.isTimerRunning().observeAsState(false)
-    val currentTime by viewModel.getCurrentTime().observeAsState(0L)
+    val currentTime by viewModel.getCurrentTime().observeAsState(600000L)
 
     var size by remember {
         mutableStateOf(IntSize.Zero)
@@ -102,10 +102,10 @@ fun Timer(
 
         Button(
             onClick = {
-                if (!isTimerRunning) {
-                    viewModel.startTimerService(600000) // Start with 10 minutes (600,000 ms)
-                } else {
+                if (isTimerRunning) {
                     viewModel.stopTimer()
+                } else {
+                    viewModel.startTimerService(600000) // Start with 10 minutes (600,000 ms)
                 }
             },
             modifier = Modifier
