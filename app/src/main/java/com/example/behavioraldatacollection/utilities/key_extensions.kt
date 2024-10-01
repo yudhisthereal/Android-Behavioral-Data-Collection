@@ -1,10 +1,10 @@
 package com.example.behavioraldatacollection.utilities
 
 import com.example.behavioraldatacollection.data.KeysDataSource
-import com.example.behavioraldatacollection.domain.model.NumericUtilityKey
-import com.example.behavioraldatacollection.domain.model.TextUtilityKey
-import com.example.behavioraldatacollection.domain.model.UtilityKey
-import com.example.behavioraldatacollection.domain.model.Key
+import com.example.behavioraldatacollection.data.model.customkeybaord.NumericUtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.TextUtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.UtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.Key
 
 fun Key.isBackspace() = this is UtilityKey.Backspace || this is NumericUtilityKey.Backspace
 fun Key.isUppercase() = this is UtilityKey.Uppercase

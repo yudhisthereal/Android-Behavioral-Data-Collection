@@ -1,6 +1,6 @@
 package com.example.behavioraldatacollection.ui.screens.gesture
 
-import com.example.behavioraldatacollection.data.GestureData
+import com.example.behavioraldatacollection.data.model.GestureData
 import com.example.behavioraldatacollection.data.repository.GestureRepository.Companion.gestureDataList
 
 class GestureUseCase {

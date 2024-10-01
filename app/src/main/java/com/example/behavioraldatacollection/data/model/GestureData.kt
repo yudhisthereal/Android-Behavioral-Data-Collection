@@ -1,4 +1,4 @@
-package com.example.behavioraldatacollection.data
+package com.example.behavioraldatacollection.data.model
 
 data class GestureData(
     val startX: Float,

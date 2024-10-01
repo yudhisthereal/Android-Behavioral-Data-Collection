@@ -10,9 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.behavioraldatacollection.data.KeysDataSource
-import com.example.behavioraldatacollection.domain.model.Key
+import com.example.behavioraldatacollection.data.model.customkeybaord.Key
 import com.example.behavioraldatacollection.utilities.append
 import com.example.behavioraldatacollection.utilities.clear
 import com.example.behavioraldatacollection.utilities.handleCaseMode

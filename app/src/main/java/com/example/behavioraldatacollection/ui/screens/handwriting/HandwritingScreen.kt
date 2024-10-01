@@ -17,14 +17,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.behavioraldatacollection.data.model.Point
+import com.example.behavioraldatacollection.data.model.TouchEventType
 import kotlin.math.atan2
 
 @Composable
 fun HandwritingScreen(navController: NavController) {
     val handwritingUseCase = HandwritingUseCase()
-    var strokes by remember { mutableStateOf(listOf<List<Offset>>()) }  // List of strokes (each stroke is a list of points)
+    var strokes by remember { mutableStateOf(listOf<Pair<List<Offset>, Color>>()) }  // List of strokes (each stroke has points and a color)
     var currentStroke by remember { mutableStateOf(listOf<Offset>()) }  // Current stroke being drawn
     var selectedColor by remember { mutableStateOf(Color.Black) }  // Default color is black
+    var strokeID by remember { mutableIntStateOf(0) }  // To track stroke IDs
+    var lastTimeStamp by remember { mutableLongStateOf(-1L)} // To track point speed
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -37,32 +41,30 @@ fun HandwritingScreen(navController: NavController) {
                 .fillMaxWidth()
                 .pointerInput(Unit) {
                     detectDragGestures(
-                        onDragStart = {
-                            currentStroke = listOf(it)  // Start new stroke
+                        onDragStart = { offset ->
+                            strokeID++  // Increment stroke ID for each new stroke
+                            currentStroke = listOf(offset)  // Start new stroke
+                            addPointData(offset, TouchEventType.DOWN, strokeID, -1L, handwritingUseCase)
+                            lastTimeStamp = System.currentTimeMillis()
                         },
                         onDrag = { change, _ ->
                             currentStroke = currentStroke + change.position  // Add points to the current stroke
+                            addPointData(change.position, TouchEventType.MOVE, strokeID, lastTimeStamp, handwritingUseCase)
+                            lastTimeStamp = System.currentTimeMillis()
                         },
                         onDragEnd = {
-                            strokes = strokes + listOf(currentStroke)  // Save the current stroke
-                            handwritingUseCase.addHandwritingData(
-                                positions = currentStroke.map { it.x to it.y },
-                                timestamps = currentStroke.map { System.currentTimeMillis() },
-                                pressure = List(currentStroke.size) { 0.5f },  // Placeholder for pressure
-                                strokeID = strokes.size + 1,
-                                touchAngle = calculateStrokeAngle(currentStroke),
-                                touchSpeed = 0.5f
-                            )
+                            strokes = strokes + Pair(currentStroke, selectedColor)  // Save the current stroke with its color
+                            addPointData(currentStroke.last(), TouchEventType.UP, strokeID, -2L, handwritingUseCase)
                             currentStroke = emptyList()  // Reset current stroke
                         }
                     )
                 }
         ) {
-            // Draw previous strokes
-            for (stroke in strokes) {
+            // Draw previous strokes with their corresponding colors
+            strokes.forEach { (stroke, color) ->
                 for (i in 1 until stroke.size) {
                     drawLine(
-                        color = selectedColor,
+                        color = color,
                         start = stroke[i - 1],
                         end = stroke[i],
                         strokeWidth = 5f
@@ -95,7 +97,7 @@ fun HandwritingScreen(navController: NavController) {
                         .size(50.dp)
                         .background(color, shape = CircleShape)
                         .clickable {
-                            selectedColor = color  // Change the selected color
+                            selectedColor = color  // Change the selected color for the next stroke
                         }
                 )
             }
@@ -121,15 +123,41 @@ fun HandwritingScreenPreview() {
     HandwritingScreen(navController = rememberNavController())
 }
 
-fun calculateStrokeAngle(strokes: List<Offset>): Float {
-    if (strokes.size < 2) return 0f // Not enough points to calculate angle
 
-    val startX = strokes[strokes.size - 2].x
-    val startY = strokes[strokes.size - 2].y
-    val endX = strokes.last().x
-    val endY = strokes.last().y
+// Function to calculate touch angle based on offset (placeholder logic)
+fun calculateAngleForPoint(offset: Offset): Float {
+    return atan2(offset.y, offset.x)
+}
 
-    // Calculate angle in degrees
-    val angle = atan2((endY - startY).toDouble(), (endX - startX).toDouble()) * (180 / Math.PI)
-    return angle.toFloat()
+// Function to calculate touch speed based on offset and timestamp (placeholder logic)
+fun calculateSpeedForPoint(offset: Offset, timestamp: Long): Float {
+    val duration = System.currentTimeMillis() - timestamp
+    return offset.getDistance() / duration
+}
+
+// Helper function to add point data to handwritingUseCase
+fun addPointData(
+    offset: Offset,
+    eventType: TouchEventType,
+    strokeID: Int,
+    lastTimeStamp: Long,
+    handwritingUseCase: HandwritingUseCase
+) {
+    val pressure = 0.5f  // Placeholder for pressure, modify if needed
+    val angle = if (lastTimeStamp > 0L) calculateAngleForPoint(offset) else 0f
+    val speed = if (lastTimeStamp > 0L) calculateSpeedForPoint(offset, lastTimeStamp) else 0f
+
+    val timestamp = System.currentTimeMillis()
+    handwritingUseCase.addPointData(
+        Point(
+            x = offset.x,
+            y = offset.y,
+            timestamp = timestamp,
+            pressure = pressure,
+            strokeID = strokeID,
+            touchAngle = angle,
+            touchSpeed = speed,
+            eventType = eventType
+        )
+    )
 }

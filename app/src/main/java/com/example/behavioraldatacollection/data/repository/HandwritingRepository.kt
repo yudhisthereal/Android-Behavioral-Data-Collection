@@ -1,9 +1,9 @@
 package com.example.behavioraldatacollection.data.repository
 
-import com.example.behavioraldatacollection.data.HandwritingData
+import com.example.behavioraldatacollection.data.model.Point
 
 class HandwritingRepository {
     companion object {
-        val handwritingDataList = mutableListOf<HandwritingData>()
+        val handwritingDataList = mutableListOf<Point>()
     }
 }

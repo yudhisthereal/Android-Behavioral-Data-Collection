@@ -1,6 +1,6 @@
 package com.example.behavioraldatacollection.ui.screens.typing
 
-import com.example.behavioraldatacollection.data.KeystrokeData
+import com.example.behavioraldatacollection.data.model.KeystrokeData
 import com.example.behavioraldatacollection.data.repository.KeystrokeRepository.Companion.keystrokeDataList
 
 class KeystrokeUseCase {

@@ -1,4 +1,4 @@
-package com.example.behavioraldatacollection.domain.model
+package com.example.behavioraldatacollection.data.model.customkeybaord
 
 sealed class Digit(
     override val text: String,

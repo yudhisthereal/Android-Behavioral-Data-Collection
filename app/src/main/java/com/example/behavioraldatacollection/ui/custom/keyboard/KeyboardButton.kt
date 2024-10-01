@@ -14,10 +14,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.behavioraldatacollection.domain.model.Digit
-import com.example.behavioraldatacollection.domain.model.Key
-import com.example.behavioraldatacollection.domain.model.TextUtilityKey
-import com.example.behavioraldatacollection.domain.model.UtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.Digit
+import com.example.behavioraldatacollection.data.model.customkeybaord.Key
+import com.example.behavioraldatacollection.data.model.customkeybaord.TextUtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.UtilityKey
 import com.example.behavioraldatacollection.utilities.handleCaseMode
 import com.example.behavioraldatacollection.utilities.toggle
 import kotlinx.coroutines.launch

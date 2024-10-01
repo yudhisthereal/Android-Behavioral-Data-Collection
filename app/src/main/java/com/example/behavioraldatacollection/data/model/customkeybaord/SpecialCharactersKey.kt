@@ -1,4 +1,4 @@
-package com.example.behavioraldatacollection.domain.model
+package com.example.behavioraldatacollection.data.model.customkeybaord
 
 sealed class SpecialCharactersKey(
     override val text: String,

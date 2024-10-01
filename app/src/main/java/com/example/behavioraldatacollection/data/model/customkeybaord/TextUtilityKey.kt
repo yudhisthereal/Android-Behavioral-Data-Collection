@@ -1,4 +1,4 @@
-package com.example.behavioraldatacollection.domain.model
+package com.example.behavioraldatacollection.data.model.customkeybaord
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Numbers

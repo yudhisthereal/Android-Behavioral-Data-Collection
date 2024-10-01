@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.behavioraldatacollection.data.KeysDataSource
-import com.example.behavioraldatacollection.domain.model.Key
+import com.example.behavioraldatacollection.data.model.customkeybaord.Key
 
 @Composable
 fun EmailSuggestionsRow(

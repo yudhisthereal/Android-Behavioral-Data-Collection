@@ -1,13 +1,13 @@
 package com.example.behavioraldatacollection.data
 
-import com.example.behavioraldatacollection.domain.model.UtilityKey.*
-import com.example.behavioraldatacollection.domain.model.SpecialCharactersKey.*
-import com.example.behavioraldatacollection.domain.model.Digit.*
-import com.example.behavioraldatacollection.domain.model.Alphabets.*
-import com.example.behavioraldatacollection.domain.model.Key
-import com.example.behavioraldatacollection.domain.model.NumericUtilityKey
-import com.example.behavioraldatacollection.domain.model.SuggestionKey
-import com.example.behavioraldatacollection.domain.model.TextUtilityKey.*
+import com.example.behavioraldatacollection.data.model.customkeybaord.UtilityKey.*
+import com.example.behavioraldatacollection.data.model.customkeybaord.SpecialCharactersKey.*
+import com.example.behavioraldatacollection.data.model.customkeybaord.Digit.*
+import com.example.behavioraldatacollection.data.model.customkeybaord.Alphabets.*
+import com.example.behavioraldatacollection.data.model.customkeybaord.Key
+import com.example.behavioraldatacollection.data.model.customkeybaord.NumericUtilityKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.SuggestionKey
+import com.example.behavioraldatacollection.data.model.customkeybaord.TextUtilityKey.*
 
 object KeysDataSource {
     val normalKeys: List<Key> by lazy { constructNormalKeys() }
