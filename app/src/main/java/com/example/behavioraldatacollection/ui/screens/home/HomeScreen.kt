@@ -19,11 +19,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.behavioraldatacollection.data.Globals
+import com.example.behavioraldatacollection.data.model.GestureData
+import com.example.behavioraldatacollection.data.model.KeystrokeData
+import com.example.behavioraldatacollection.data.model.Point
 import com.example.behavioraldatacollection.data.repository.GestureRepository
 import com.example.behavioraldatacollection.data.repository.HandwritingRepository
 import com.example.behavioraldatacollection.data.repository.KeystrokeRepository
 import java.util.UUID
 import com.example.behavioraldatacollection.data.storage.ExternalStorageManager
+import com.example.behavioraldatacollection.data.toRowsString
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -43,11 +47,19 @@ fun HomeScreen(navController: NavController) {
 
             if (!isMonitoring) {
                 val dataToSave = buildString {
-                    append("Keystroke Data: ${KeystrokeRepository.keystrokeDataList}\n")
-                    append("Gesture Data: ${GestureRepository.gestureDataList}\n")
-                    append("Handwriting Data: ${HandwritingRepository.handwritingDataList}\n")
+                    append("Keystroke Data\n")
+                    append("${KeystrokeData.getColNames()}\n")
+                    append(KeystrokeRepository.keystrokeDataList.toRowsString())
+
+                    append("\nGesture Data\n")
+                    append("${GestureData.getColNames()}\n")
+                    append(GestureRepository.gestureDataList.toRowsString())
+
+                    append("\nHandwriting Data\n")
+                    append("${Point.getColNames()}\n")
+                    append(HandwritingRepository.handwritingDataList.toRowsString())
                 }
-                val success = storageManager.saveDataToExternalStorage(context,"Data ${UUID.randomUUID()}", dataToSave)
+                val success = storageManager.saveDataToExternalStorage(context,"BehaviorData-${UUID.randomUUID()}", dataToSave)
 
                 Toast.makeText(context, "Data saved: $success", Toast.LENGTH_SHORT).show()
 

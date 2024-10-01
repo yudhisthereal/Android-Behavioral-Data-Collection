@@ -96,7 +96,7 @@ fun GestureScreen(navController: NavController) {
                             duration,
                             speed.toFloat(),
                             angle.toFloat(),
-                            0f
+                            0f // TODO: Touch pressure capture
                         )
                     }
                 }

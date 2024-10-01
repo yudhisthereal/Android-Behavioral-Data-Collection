@@ -87,7 +87,7 @@ fun TypingScreen(navController: NavController) {
                                     releaseTimestamp = releaseTimeStamp,
                                     holdTime = holdTime,
                                     flightTime = flightTime,
-                                    typingPattern = inputText.value.text
+                                    typingPattern = inputText.value.text // TODO: Typing pattern (speed, pauses, transition between keys)
                                 )
 
                                 lastKeyReleaseTime = releaseTimeStamp

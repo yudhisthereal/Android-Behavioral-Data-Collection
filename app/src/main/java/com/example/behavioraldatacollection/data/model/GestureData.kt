@@ -11,6 +11,11 @@ data class GestureData(
     val pressure: Float
 ) {
     override fun toString(): String {
-        return "GestureData(startX=$startX, startY=$startY, endX=$endX, endY=$endY, duration=$duration, speed=$speed, direction=$direction, pressure=$pressure)"
+        return "$startX, $startY, $endX, $endY, $duration, $speed, $direction, $pressure"
+    }
+    companion object {
+        fun getColNames(): String {
+            return "startX, startY, endX, endY, duration, speed, direction, pressure"
+        }
     }
 }

@@ -18,8 +18,8 @@ class ExternalStorageManager {
     fun saveDataToExternalStorage(context: Context, filename: String, data: String): Boolean {
         // Prepare the ContentValues for storing file details
         val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, "$filename.txt")
-            put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$filename.csv")
+            put(MediaStore.MediaColumns.MIME_TYPE, "text/csv")
             put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS)
         }
 
@@ -44,7 +44,7 @@ class ExternalStorageManager {
     fun readDataFromExternalStorage(context: Context, filename: String): String {
         val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns._ID)
         val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf("$filename.txt")
+        val selectionArgs = arrayOf("$filename.csv")
 
         // Query the MediaStore for the file
         val cursor = context.contentResolver.query(

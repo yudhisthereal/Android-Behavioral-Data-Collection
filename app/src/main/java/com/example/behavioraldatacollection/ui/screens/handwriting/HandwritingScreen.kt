@@ -17,9 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.behavioraldatacollection.data.model.Point
 import com.example.behavioraldatacollection.data.model.TouchEventType
-import kotlin.math.atan2
 
 @Composable
 fun HandwritingScreen(navController: NavController) {
@@ -45,7 +43,7 @@ fun HandwritingScreen(navController: NavController) {
                             strokeID++  // Increment stroke ID for each new stroke
                             currentStroke = listOf(offset)  // Start new stroke
                             addPointData(offset, TouchEventType.DOWN, strokeID, -1L, handwritingUseCase)
-                            lastTimeStamp = System.currentTimeMillis()
+                            lastTimeStamp = 0 // if set to current time, it will cause infinite speed for the first MOVE point
                         },
                         onDrag = { change, _ ->
                             currentStroke = currentStroke + change.position  // Add points to the current stroke
@@ -121,43 +119,4 @@ fun HandwritingScreen(navController: NavController) {
 @Composable
 fun HandwritingScreenPreview() {
     HandwritingScreen(navController = rememberNavController())
-}
-
-
-// Function to calculate touch angle based on offset (placeholder logic)
-fun calculateAngleForPoint(offset: Offset): Float {
-    return atan2(offset.y, offset.x)
-}
-
-// Function to calculate touch speed based on offset and timestamp (placeholder logic)
-fun calculateSpeedForPoint(offset: Offset, timestamp: Long): Float {
-    val duration = System.currentTimeMillis() - timestamp
-    return offset.getDistance() / duration
-}
-
-// Helper function to add point data to handwritingUseCase
-fun addPointData(
-    offset: Offset,
-    eventType: TouchEventType,
-    strokeID: Int,
-    lastTimeStamp: Long,
-    handwritingUseCase: HandwritingUseCase
-) {
-    val pressure = 0.5f  // Placeholder for pressure, modify if needed
-    val angle = if (lastTimeStamp > 0L) calculateAngleForPoint(offset) else 0f
-    val speed = if (lastTimeStamp > 0L) calculateSpeedForPoint(offset, lastTimeStamp) else 0f
-
-    val timestamp = System.currentTimeMillis()
-    handwritingUseCase.addPointData(
-        Point(
-            x = offset.x,
-            y = offset.y,
-            timestamp = timestamp,
-            pressure = pressure,
-            strokeID = strokeID,
-            touchAngle = angle,
-            touchSpeed = speed,
-            eventType = eventType
-        )
-    )
 }
