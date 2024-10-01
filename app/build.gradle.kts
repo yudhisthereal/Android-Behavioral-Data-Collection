@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.ir.util.toIrConst
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -84,4 +86,7 @@ dependencies {
 
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
+
+    // Material Icons
+    implementation(libs.androidx.material.icons.extended)
 }
