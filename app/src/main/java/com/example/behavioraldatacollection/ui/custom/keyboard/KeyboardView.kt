@@ -58,7 +58,6 @@ fun KeyboardView(
             .background(
                 MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium
             )
-            .padding(8.dp)
     ) {
         if (enableEmailSuggestions)
             EmailSuggestionsRow(textFieldState) {}

@@ -80,7 +80,7 @@ fun KeyboardButton(
             .zIndex(if (isFocused) 10f else 1f)
             .focusRequester(focusRequester)
             .focusable(interactionSource = interactionSource)
-            .padding(4.dp)
+            .padding(1.dp)
     ) {
         when (key) {
             is TextUtilityKey -> {
