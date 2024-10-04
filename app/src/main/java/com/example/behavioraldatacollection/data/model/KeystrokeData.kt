@@ -6,15 +6,15 @@ data class KeystrokeData(
     val keyReleaseTime: Long,
     val holdTime: Long,
     val flightTime: Long?,
-    val typingPattern: String
+    val typingPattern: TypingPattern
 ) {
     override fun toString(): String {
-        return "'$keyPressed', $keyPressTime, $keyReleaseTime, $holdTime, $flightTime, '$typingPattern'"
+        return "'$keyPressed', $keyPressTime, $keyReleaseTime, $holdTime, $flightTime, $typingPattern"
     }
 
     companion object {
         fun getColNames(): String {
-            return "keyPressed, keyPressTime, keyReleaseTime, holdTime, flightTime, typingPattern"
+            return "keyPressed, keyPressTime, keyReleaseTime, holdTime, flightTime, typingSpeed, avgPause, avgTransition"
         }
     }
 }
