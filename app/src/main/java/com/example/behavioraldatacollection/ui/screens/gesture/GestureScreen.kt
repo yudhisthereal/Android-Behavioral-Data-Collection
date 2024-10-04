@@ -3,7 +3,6 @@ package com.example.behavioraldatacollection.ui.screens.gesture
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +40,7 @@ fun GestureScreen(navController: NavController) {
     var startY by remember { mutableFloatStateOf(0f) }
     var endX by remember { mutableFloatStateOf(0f) }
     var endY by remember { mutableFloatStateOf(0f) }
+    var n_gestures by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -69,24 +70,38 @@ fun GestureScreen(navController: NavController) {
                         // Add the first point (start of the gesture)
                         gesturePoints = gesturePoints + Offset(startX, startY)
 
+                        var pressure = down.pressure
+
                         // Track the gesture
                         do {
                             val event = awaitPointerEvent()
                             event.changes.forEach { change ->
                                 // Add each intermediate point of the gesture
                                 gesturePoints = gesturePoints + change.position
+                                pressure += change.pressure
                             }
                         } while (event.changes.any { it.pressed })
 
                         endX = gesturePoints.lastOrNull()?.x ?: startX
                         endY = gesturePoints.lastOrNull()?.y ?: startY
 
-                        val angle = atan2(endY - startY, endX - startX) * 180 / Math.PI
+                        var angle = atan2(endY - startY, endX - startX) * 180 / Math.PI
+                        if (angle < 0) {
+                            angle += 360
+                        }
                         val duration = System.currentTimeMillis() - startTime
                         val distance = kotlin.math.sqrt((endX - startX).toDouble().pow(2) + (endY - startY).toDouble().pow(2))
                         val speed = distance / duration
+                        pressure /= gesturePoints.size
+                        if (pressure == 1f) {
+                            n_gestures++
+                        } else {
+                            n_gestures = 0
+                        }
 
-                        gestureData = "Angle = $angle\nSpeed = $speed\nDuration = $duration\n"
+                        val pressureInfo = if (n_gestures < 3) "" else "(Your device doesn't support Touch Pressure Sensitivity)"
+
+                        gestureData = "Angle = $angle\nSpeed = $speed\nDuration = $duration\nPressure = $pressure \n$pressureInfo"
 
                         gestureUseCase.addGesture(
                             startX,
@@ -96,7 +111,7 @@ fun GestureScreen(navController: NavController) {
                             duration,
                             speed.toFloat(),
                             angle.toFloat(),
-                            0f // TODO: Touch pressure capture
+                            pressure
                         )
                     }
                 }

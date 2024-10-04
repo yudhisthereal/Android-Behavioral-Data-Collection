@@ -1,9 +1,11 @@
 package com.example.behavioraldatacollection.ui.screens.handwriting
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -12,7 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,6 +32,10 @@ fun HandwritingScreen(navController: NavController) {
     var selectedColor by remember { mutableStateOf(Color.Black) }  // Default color is black
     var strokeID by remember { mutableIntStateOf(0) }  // To track stroke IDs
     var lastTimeStamp by remember { mutableLongStateOf(-1L)} // To track point speed
+    var nMaxPressurePoints by remember { mutableIntStateOf(0) }
+    var pressureSupported by remember { mutableStateOf(true) }
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -38,24 +47,51 @@ fun HandwritingScreen(navController: NavController) {
                 .weight(1f)
                 .fillMaxWidth()
                 .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { offset ->
-                            strokeID++  // Increment stroke ID for each new stroke
-                            currentStroke = listOf(offset)  // Start new stroke
-                            addPointData(offset, TouchEventType.DOWN, strokeID, -1L, handwritingUseCase)
-                            lastTimeStamp = 0 // if set to current time, it will cause infinite speed for the first MOVE point
-                        },
-                        onDrag = { change, _ ->
-                            currentStroke = currentStroke + change.position  // Add points to the current stroke
-                            addPointData(change.position, TouchEventType.MOVE, strokeID, lastTimeStamp, handwritingUseCase)
-                            lastTimeStamp = System.currentTimeMillis()
-                        },
-                        onDragEnd = {
-                            strokes = strokes + Pair(currentStroke, selectedColor)  // Save the current stroke with its color
-                            addPointData(currentStroke.last(), TouchEventType.UP, strokeID, -2L, handwritingUseCase)
-                            currentStroke = emptyList()  // Reset current stroke
+                    awaitEachGesture {
+                        // Wait for the first down event
+                        val down = awaitFirstDown()
+                        val position = down.position
+                        val pressure = down.pressure
+
+                        strokeID++  // Increment stroke ID for each new stroke
+                        currentStroke = listOf(position)  // Start new stroke
+                        addPointData(position, TouchEventType.DOWN, strokeID, -1L, pressure, handwritingUseCase)
+                        lastTimeStamp = 0 // Reset timestamp
+                        nMaxPressurePoints++
+
+                        // Continue to handle movement
+                        var lastPosition = position
+                        while (true) {
+                            val event = awaitPointerEvent() // Await the next pointer event
+                            val changes = event.changes.firstOrNull() ?: continue
+                            val currentPressure = changes.pressure
+
+                            if (changes.changedToUp()) {
+                                // Touch ended
+                                addPointData(lastPosition, TouchEventType.UP, strokeID, -2L, currentPressure, handwritingUseCase)
+                                strokes = strokes + Pair(currentStroke, selectedColor)
+                                currentStroke = emptyList()  // Reset stroke
+                                if (currentPressure == 1f) {
+                                    nMaxPressurePoints++
+                                }
+                                break
+                            } else if (changes.positionChange() != Offset.Zero) {
+                                // Movement detected
+                                currentStroke = currentStroke + changes.position  // Add to stroke
+                                addPointData(changes.position, TouchEventType.MOVE, strokeID, lastTimeStamp, currentPressure, handwritingUseCase)
+                                lastTimeStamp = System.currentTimeMillis()
+                                lastPosition = changes.position
+                                if (currentPressure == 1f) {
+                                    nMaxPressurePoints++
+                                }
+                            }
                         }
-                    )
+
+                        if (nMaxPressurePoints > 30 && pressureSupported) {
+                            pressureSupported = false
+                            Toast.makeText(context, "Your device doesn't support Touch Pressure Sensitivity", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 }
         ) {
             // Draw previous strokes with their corresponding colors

@@ -10,9 +10,9 @@ fun addPointData(
     eventType: TouchEventType,
     strokeID: Int,
     lastTimeStamp: Long,
+    pressure: Float,
     handwritingUseCase: HandwritingUseCase
 ) {
-    val pressure = 0.5f  // TODO: Touch pressure capture
     val angle = if (lastTimeStamp > 0L) calculateAngleForPoint(offset) else 0f
     val speed = if (lastTimeStamp > 0L) calculateSpeedForPoint(offset, lastTimeStamp) else 0f
 
